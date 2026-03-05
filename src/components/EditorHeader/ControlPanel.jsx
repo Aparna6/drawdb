@@ -85,6 +85,7 @@ import { getTableHeight } from "../../utils/utils";
 import { deleteFromCache, STORAGE_KEY } from "../../utils/cache";
 import { useLiveQuery } from "dexie-react-hooks";
 import { DateTime } from "luxon";
+import { autoArrangeTables } from "../../utils/arrangeTables";
 
 export default function ControlPanel({ title, setTitle, lastSaved }) {
   const { id: diagramId } = useParams();
@@ -565,6 +566,43 @@ export default function ControlPanel({ title, setTitle, lastSaved }) {
       zoom: scale,
       pan: { x: centerX, y: centerY },
     }));
+  };
+  const autoArrange = (algorithm = "hybrid") => {
+    if (layout.readOnly || tables.length < 2) return;
+
+    const arrangedTables = autoArrangeTables(tables, relationships, {
+      algorithm,
+      tableWidth: settings.tableWidth,
+    });
+
+    const byId = new Map(arrangedTables.map((table) => [table.id, table]));
+    const movedElements = tables
+      .map((table) => {
+        const arranged = byId.get(table.id);
+        if (!arranged) return null;
+        if (table.x === arranged.x && table.y === arranged.y) return null;
+        return {
+          id: table.id,
+          type: ObjectType.TABLE,
+          undo: { x: table.x, y: table.y },
+          redo: { x: arranged.x, y: arranged.y },
+        };
+      })
+      .filter(Boolean);
+
+    if (movedElements.length === 0) return;
+
+    setUndoStack((prev) => [
+      ...prev,
+      {
+        action: Action.MOVE,
+        bulk: true,
+        message: t("auto_arrange"),
+        elements: movedElements,
+      },
+    ]);
+    setRedoStack([]);
+    setTables(arrangedTables);
   };
   const edit = () => {
     if (selectedElement.element === ObjectType.TABLE) {
@@ -1358,6 +1396,11 @@ export default function ControlPanel({ title, setTitle, lastSaved }) {
         function: resetView,
         shortcut: "Enter/Return",
       },
+      auto_arrange: {
+        function: () => autoArrange("hybrid"),
+        shortcut: "Ctrl+Alt+A",
+        disabled: layout.readOnly || tables.length < 2,
+      },
       show_comments: {
         state: settings.showComments ? (
           <i className="bi bi-toggle-on" />
@@ -1559,6 +1602,7 @@ export default function ControlPanel({ title, setTitle, lastSaved }) {
     preventDefault: true,
   });
   useHotkeys("mod+alt+w", fitWindow, { preventDefault: true });
+  useHotkeys("mod+alt+a", () => autoArrange("hybrid"), { preventDefault: true });
   useHotkeys("alt+e", toggleDBMLEditor, { preventDefault: true });
 
   return (
@@ -1684,6 +1728,15 @@ export default function ControlPanel({ title, setTitle, lastSaved }) {
               }
             >
               <i className="fa-solid fa-magnifying-glass-plus" />
+            </button>
+          </Tooltip>
+          <Tooltip content={t("auto_arrange")} position="bottom">
+            <button
+              className="py-1 px-2 hover-2 rounded-sm text-lg disabled:opacity-50"
+              onClick={() => autoArrange("hybrid")}
+              disabled={layout.readOnly || tables.length < 2}
+            >
+              <i className="fa-solid fa-wand-magic-sparkles" />
             </button>
           </Tooltip>
           <Divider layout="vertical" margin="8px" />
