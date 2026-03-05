@@ -10,6 +10,7 @@ export function getJsonType(f) {
     case "INT":
     case "SMALLINT":
     case "BIGINT":
+    case "MYPRIMETYPE":
     case "DECIMAL":
     case "NUMERIC":
     case "REAL":
@@ -50,6 +51,9 @@ export function getTypeString(
     if (field.type === "UUID") {
       return `VARCHAR(36)`;
     }
+    if (field.type === "MYPRIMETYPE") {
+      return "INT";
+    }
     if (
       dbToTypes[currentDb][field.type].isSized ||
       dbToTypes[currentDb][field.type].hasPrecision
@@ -84,6 +88,9 @@ export function getTypeString(
     }
     if (field.type === "DATETIME") {
       return `timestamp`;
+    }
+    if (field.type === "MYPRIMETYPE") {
+      return "integer";
     }
     if (dbToTypes[currentDb][field.type].isSized && field.size) {
       const type =
@@ -124,6 +131,8 @@ export function getTypeString(
         return "BIT";
       case "SET":
         return "NVARCHAR(255)";
+      case "MYPRIMETYPE":
+        return "INT";
       case "BLOB":
         return "VARBINARY(MAX)";
       case "JSON":
@@ -165,6 +174,9 @@ export function getTypeString(
       case "SET":
       case "ENUM":
         oracleType = field.name + "_t";
+        break;
+      case "MYPRIMETYPE":
+        oracleType = "NUMBER";
         break;
       default:
         oracleType = field.type;
@@ -357,6 +369,7 @@ export function getSQLiteType(field) {
     case "INT":
     case "SMALLINT":
     case "BIGINT":
+    case "MYPRIMETYPE":
     case "BOOLEAN":
       return "INTEGER";
     case "DECIMAL":

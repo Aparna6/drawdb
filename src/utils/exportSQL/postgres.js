@@ -1,6 +1,10 @@
 import { escapeQuotes, exportFieldComment, parseDefault } from "./shared";
 import { dbToTypes } from "../../data/datatypes";
 
+function parseType(type) {
+  return type === "MYPRIMETYPE" ? "INTEGER" : type;
+}
+
 export function toPostgres(diagram) {
   const enumStatements = diagram.enums
     .map(
@@ -15,7 +19,7 @@ export function toPostgres(diagram) {
     .map(
       (type) =>
         `CREATE TYPE ${type.name} AS (\n${type.fields
-          .map((f) => `\t${f.name} ${f.type}`)
+          .map((f) => `\t${f.name} ${parseType(f.type)}`)
           .join(",\n")}\n);\n\n${
           type.comment?.trim()
             ? `COMMENT ON TYPE "${type.name}" IS '${escapeQuotes(type.comment)}';\n`
@@ -36,7 +40,7 @@ export function toPostgres(diagram) {
           (field) =>
             `${exportFieldComment(field.comment)}\t"${
               field.name
-            }" ${field.type}${
+            }" ${parseType(field.type)}${
               field.size ? `(${field.size})` : ""
             }${field.isArray ? " ARRAY" : ""}${field.notNull ? " NOT NULL" : ""}${
               field.unique ? " UNIQUE" : ""
