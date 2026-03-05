@@ -2,6 +2,10 @@ import { exportFieldComment, getInlineFK, parseDefault } from "./shared";
 
 import { dbToTypes } from "../../data/datatypes";
 
+function parseType(type) {
+  return type === "MYPRIMETYPE" ? "INTEGER" : type;
+}
+
 export function toSqlite(diagram) {
   return diagram.tables
     .map((table) => {
@@ -13,7 +17,7 @@ export function toSqlite(diagram) {
           (field) =>
             `${exportFieldComment(field.comment)}\t"${
               field.name
-            }" ${field.type}${field.notNull ? " NOT NULL" : ""}${
+            }" ${parseType(field.type)}${field.notNull ? " NOT NULL" : ""}${
               field.unique ? " UNIQUE" : ""
             }${field.default !== "" ? ` DEFAULT ${parseDefault(field, diagram.database)}` : ""}${
               field.check === "" ||

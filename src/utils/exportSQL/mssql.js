@@ -3,6 +3,10 @@ import { parseDefault, escapeQuotes } from "./shared";
 import { dbToTypes } from "../../data/datatypes";
 import { DB } from "../../data/constants";
 
+function parseType(type) {
+  return type === "MYPRIMETYPE" ? "INT" : type;
+}
+
 function generateAddExtendedPropertySQL(value, level1name, level2name = null) {
   if (!value || value.trim() === "") {
     return "";
@@ -39,7 +43,7 @@ export function toMSSQL(diagram) {
           const typeMetaData = dbToTypes[DB.MSSQL][field.type.toUpperCase()];
           const isSized = typeMetaData.isSized || typeMetaData.hasPrecision;
 
-          return `\t[${field.name}] ${field.type}${field.size && isSized ? `(${field.size})` : ""}${
+          return `\t[${field.name}] ${parseType(field.type)}${field.size && isSized ? `(${field.size})` : ""}${
             field.notNull ? " NOT NULL" : ""
           }${field.increment ? " IDENTITY" : ""}${
             field.unique ? " UNIQUE" : ""

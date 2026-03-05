@@ -4,7 +4,7 @@ import { dbToTypes } from "../../data/datatypes";
 import { DB } from "../../data/constants";
 
 function parseType(field) {
-  let res = field.type;
+  let res = field.type === "MYPRIMETYPE" ? "INT" : field.type;
 
   if (field.type === "SET" || field.type === "ENUM") {
     res += `${field.values ? "(" + field.values.map((value) => "'" + value + "'").join(", ") + ")" : ""}`;

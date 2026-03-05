@@ -1,6 +1,10 @@
 import { dbToTypes } from "../../data/datatypes";
 import { parseDefault } from "./shared";
 
+function parseType(type) {
+  return type === "MYPRIMETYPE" ? "NUMBER" : type;
+}
+
 export function toOracleSQL(diagram) {
   return `${diagram.tables
     .map(
@@ -12,7 +16,7 @@ export function toOracleSQL(diagram) {
             (field) =>
               `${field.comment === "" ? "" : `\t-- ${field.comment}\n`}\t"${
                 field.name
-              }" ${field.type}${
+              }" ${parseType(field.type)}${
                 field.size !== undefined && field.size !== ""
                   ? "(" + field.size + ")"
                   : ""
