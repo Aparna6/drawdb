@@ -31,6 +31,7 @@ import {
 } from "react-router-dom";
 import { get, SHARE_FILENAME } from "../api/gists";
 import { nanoid } from "nanoid";
+import StatsBox from "./StatsBox";
 
 export const IdContext = createContext({
   gistId: "",
@@ -491,6 +492,9 @@ export default function WorkSpace() {
           <CanvasContextProvider className="h-full w-full">
             <Canvas saveState={saveState} setSaveState={setSaveState} />
           </CanvasContextProvider>
+          <div className="absolute left-4 bottom-4 pointer-events-none z-20">
+            <StatsBox />
+          </div>
           {version && (
             <div className="absolute right-8 top-2 space-x-2">
               <Button
