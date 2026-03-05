@@ -53,6 +53,7 @@ const en = {
     strict_mode: "Strict mode",
     field_details: "Field details",
     reset_view: "Reset view",
+    auto_arrange: "Auto arrange",
     show_grid: "Show grid",
     snap_to_grid: "Snap to grid",
     show_datatype: "Show datatype",
