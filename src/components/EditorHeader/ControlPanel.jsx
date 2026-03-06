@@ -80,6 +80,7 @@ import { IdContext } from "../Workspace";
 import { socials } from "../../data/socials";
 import { toDBML } from "../../utils/exportAs/dbml";
 import { exportSavedData } from "../../utils/exportSavedData";
+import { generateSampleData } from "../../utils/sampleData";
 import { nanoid } from "nanoid";
 import { getTableHeight } from "../../utils/utils";
 import { deleteFromCache, STORAGE_KEY } from "../../utils/cache";
@@ -1218,6 +1219,22 @@ export default function ControlPanel({ title, setTitle, lastSaved }) {
           },
         ],
         function: () => {},
+      },
+      generate_sample_data: {
+        function: () => {
+          const sql = generateSampleData(
+            { tables, database },
+            { rowsPerTable: 3 },
+          );
+          setExportData((prev) => ({
+            ...prev,
+            data: sql,
+            filename: `${title}_sample_data`,
+            extension: "sql",
+          }));
+          setModal(MODAL.CODE);
+        },
+        disabled: layout.readOnly || tables.length === 0,
       },
       exit: {
         function: () => {

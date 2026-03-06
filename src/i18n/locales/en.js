@@ -278,6 +278,7 @@ const en = {
     json_diff: "JSON diff",
     download: "Download",
     insert_sql: "Insert SQL",
+    generate_sample_data: "Generate sample data",
     upload_file: "Upload file",
     show_comments: "Show comments",
   },
