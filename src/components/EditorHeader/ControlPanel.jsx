@@ -66,6 +66,7 @@ import {
 } from "../../hooks";
 import { enterFullscreen, exitFullscreen } from "../../utils/fullscreen";
 import { dataURItoBlob } from "../../utils/utils";
+import { arrangeTables } from "../../utils/arrangeTables";
 import { IconAddArea, IconAddNote, IconAddTable } from "../../icons";
 import LayoutDropdown from "./LayoutDropdown";
 import Sidesheet from "./SideSheet/Sidesheet";
@@ -565,6 +566,37 @@ export default function ControlPanel({ title, setTitle, lastSaved }) {
       zoom: scale,
       pan: { x: centerX, y: centerY },
     }));
+  };
+
+  const autoArrangeLayout = () => {
+    if (layout.readOnly || tables.length === 0) return;
+
+    const tablesCopy = tables.map((table) => ({ ...table }));
+    const diagram = { tables: tablesCopy };
+
+    arrangeTables(diagram);
+
+    const elements = tables.map((table, index) => ({
+      id: table.id,
+      type: ObjectType.TABLE,
+      undo: { x: table.x, y: table.y },
+      redo: {
+        x: diagram.tables[index].x,
+        y: diagram.tables[index].y,
+      },
+    }));
+
+    setUndoStack((prev) => [
+      ...prev,
+      {
+        action: Action.MOVE,
+        bulk: true,
+        message: t("auto_arrange_layout"),
+        elements,
+      },
+    ]);
+    setRedoStack([]);
+    setTables(diagram.tables);
   };
   const edit = () => {
     if (selectedElement.element === ObjectType.TABLE) {
@@ -1731,6 +1763,15 @@ export default function ControlPanel({ title, setTitle, lastSaved }) {
               disabled={layout.readOnly}
             >
               <IconAddNote />
+            </button>
+          </Tooltip>
+          <Tooltip content={t("auto_arrange_layout")} position="bottom">
+            <button
+              className="py-1 px-2 hover-2 rounded-sm flex items-center disabled:opacity-50"
+              onClick={autoArrangeLayout}
+              disabled={layout.readOnly || tables.length === 0}
+            >
+              <i className="fa-solid fa-sitemap" />
             </button>
           </Tooltip>
           <Divider layout="vertical" margin="8px" />
