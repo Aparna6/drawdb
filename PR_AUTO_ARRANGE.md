@@ -1,15 +1,3 @@
-# Auto Arrange Layout – PR Description
-
-Use the content below as your GitHub PR description. Screenshots: either drag-and-drop the images from `docs/pr-screenshots/` into the PR body on GitHub, or take your own from the running app.
-
----
-
-## Copy-paste PR title (short)
-
-`feat: Add Auto arrange layout button to toolbar`
-
----
-
 ## Summary
 
 Adds an **Auto arrange** control that repositions all tables on the canvas into a consistent two-row layout. This helps reduce visual clutter and can minimize relationship line crossings when tables are spread randomly. The action is **undoable** via the existing Undo/Redo buttons.
@@ -57,24 +45,6 @@ Adds an **Auto arrange** control that repositions all tables on the canvas into 
 6. Click **Undo**: tables should return to their previous positions.
 7. Click **Redo**: tables should go back to the arranged layout.
 8. In read-only mode (or with zero tables), the button should be disabled.
-
-## Screenshots
-
-You can use either:
-
-- **Option A – Real app:** Run the app, open a diagram, and capture (1) the toolbar with the new button, (2) canvas before Auto arrange, (3) canvas after Auto arrange. Drag and drop those images into the PR description on GitHub.
-- **Option B – Illustrations:** Three reference images were generated for this PR:
-  - `auto-arrange-toolbar.png` – toolbar with the Auto arrange (sitemap) button.
-  - `auto-arrange-before.png` – scattered tables (before).
-  - `auto-arrange-after.png` – two-row layout (after).
-
-They are in your Cursor project assets folder. To use them in the PR: on GitHub, drag and drop each image into the PR description; GitHub will upload and insert the link.
-
-## Possible follow-ups
-
-- Add alternative algorithms (e.g. force-directed, layered/Sugiyama) as options.
-- Add a “Minimize crossings” mode that reorders or repositions tables to reduce relationship edge crossings.
-- Make spacing/layout parameters (e.g. gap, table width) configurable.
 
 ---
 
