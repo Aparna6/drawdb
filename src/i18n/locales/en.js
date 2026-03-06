@@ -90,6 +90,7 @@ const en = {
     saving: "Saving...",
     failed_to_save: "Failed to save",
     fit_window_reset: "Fit window / Reset",
+    auto_arrange_layout: "Auto arrange layout",
     zoom: "Zoom",
     add_table: "Add table",
     add_area: "Add area",
