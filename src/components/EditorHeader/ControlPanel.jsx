@@ -1435,6 +1435,18 @@ export default function ControlPanel({ title, setTitle, lastSaved }) {
             showDebugCoordinates: !prev.showDebugCoordinates,
           })),
       },
+      show_stats_box: {
+        state: settings.showStatsBox ? (
+          <i className="bi bi-toggle-on" />
+        ) : (
+          <i className="bi bi-toggle-off" />
+        ),
+        function: () =>
+          setSettings((prev) => ({
+            ...prev,
+            showStatsBox: !prev.showStatsBox,
+          })),
+      },
       theme: {
         children: [
           {
