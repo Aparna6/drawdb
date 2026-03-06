@@ -30,6 +30,7 @@ import { useTranslation } from "react-i18next";
 import { useEventListener } from "usehooks-ts";
 import { areFieldsCompatible, getTableHeight } from "../../utils/utils";
 import { getRectFromEndpoints, isInsideRect } from "../../utils/rect";
+import { getLayoutStats } from "../../utils/layoutStats";
 import { State, noteWidth } from "../../data/constants";
 import { nanoid } from "nanoid";
 
@@ -793,6 +794,40 @@ export default function Canvas() {
           )}
         </svg>
       </div>
+      {settings.showStatsBox && (() => {
+        const stats = getLayoutStats(tables, relationships, areas, notes);
+        return (
+          <div className="fixed flex flex-col gap-1 bg-[rgba(var(--semi-grey-1),var(--tw-bg-opacity))]/95 border border-color bottom-4 left-4 p-3 rounded-xl backdrop-blur-xs pointer-events-none select-none text-sm">
+            <div className="font-semibold border-b border-color pb-1 mb-1">
+              {t("layout_stats")}
+            </div>
+            <div className="flex justify-between gap-4">
+              <span>{t("tables")}</span>
+              <span>{stats.tableCount}</span>
+            </div>
+            <div className="flex justify-between gap-4">
+              <span>{t("relationships")}</span>
+              <span>{stats.relationshipCount}</span>
+            </div>
+            <div className="flex justify-between gap-4">
+              <span>{t("max_depth")}</span>
+              <span>{stats.maxDepth}</span>
+            </div>
+            <div className="flex justify-between gap-4">
+              <span>{t("total_fields")}</span>
+              <span>{stats.totalFields}</span>
+            </div>
+            <div className="flex justify-between gap-4">
+              <span>{t("subject_areas")}</span>
+              <span>{stats.areaCount}</span>
+            </div>
+            <div className="flex justify-between gap-4">
+              <span>{t("notes")}</span>
+              <span>{stats.noteCount}</span>
+            </div>
+          </div>
+        );
+      })()}
       {settings.showDebugCoordinates && (
         <div className="fixed flex flex-col flex-wrap gap-6 bg-[rgba(var(--semi-grey-1),var(--tw-bg-opacity))]/40 border border-color bottom-4 right-4 p-4 rounded-xl backdrop-blur-xs pointer-events-none select-none">
           <table className="table-auto grow">
